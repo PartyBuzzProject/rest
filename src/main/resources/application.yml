@@ -1,0 +1,27 @@
+quarkus:
+  datasource:
+    db-kind: ${DB_KIND}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    jdbc: false
+    reactive:
+      url: ${DB_URL}
+  oidc:
+    auth-server-url: https://partybuzz.eu.auth0.com
+    client-id: Brh4BWLPzZtEkz5r5CuYD9vVM4E7kAti
+    credentials:
+      secret: iLFZyGyxFfNJiID2HuU_vQ1LWLwjSZOuNh9v0XgM72o-Pe6Hwq4NZQtV9NpSU7Jo
+    token:
+      audience: https://api.partybuzz.ch
+    roles:
+      role-claim-path: permissions
+  log:
+    category:
+      "io.quarkus.oidc":
+        level: DEBUG
+      "io.quarkus.security":
+        level: DEBUG
+
+partybuzz:
+  flyway:
+    run-migration: ${RUN_FLYWAY_MIGRATION}

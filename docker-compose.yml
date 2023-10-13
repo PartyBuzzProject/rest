@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  db:
+    image: cockroachdb/cockroach:v23.1.8
+    command: start-single-node --insecure
+    environment:
+      COCKROACH_DATABASE: ${DB_NAME}
+    volumes:
+      - 'db:/cockroach/cockroach-data'
+    entrypoint:
+      - /bin/bash
+      - -c
+      - >-
+        /cockroach/cockroach.sh start-single-node --insecure &&
+        until /cockroach/cockroach sql --insecure -e 'SHOW DATABASES'; do sleep 1; done &&
+        /cockroach/cockroach sql --insecure -e "CREATE DATABASE IF NOT EXISTS $$COCKROACH_DATABASE" &&
+        tail -f /dev/null
+
+
+volumes:
+  db:
