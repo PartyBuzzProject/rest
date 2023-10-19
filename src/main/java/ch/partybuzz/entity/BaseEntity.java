@@ -3,11 +3,13 @@ package ch.partybuzz.entity;
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Getter
+@Setter
 @MappedSuperclass
 public abstract class BaseEntity extends PanacheEntityBase {
     @Id
