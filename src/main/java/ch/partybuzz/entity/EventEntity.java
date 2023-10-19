@@ -35,7 +35,7 @@ public class EventEntity extends BaseEntity {
     private OffsetDateTime endDate;
 
     @Column(name = "organizer_id")
-    private UUID organizerId;
+    private String organizerId;
 
     @Column(name = "image_url")
     private String imageUrl;

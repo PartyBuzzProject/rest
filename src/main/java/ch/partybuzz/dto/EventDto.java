@@ -10,7 +10,7 @@ import java.util.UUID;
  * DTO for {@link ch.partybuzz.entity.EventEntity}
  */
 public record EventDto(UUID id, OffsetDateTime createdAt, OffsetDateTime updatedAt, String title, String description,
-                       String location, OffsetDateTime startDate, OffsetDateTime endDate, UUID organizerId,
+                       String location, OffsetDateTime startDate, OffsetDateTime endDate, String organizerId,
                        String imageUrl, OffsetDateTime saleStartTime, boolean allowTicketPurchaseAfterStart,
                        String category, List<EventTagDto> tags, boolean isFeatured,
                        List<TicketDto> tickets) implements Serializable {
