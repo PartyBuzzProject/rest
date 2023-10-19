@@ -2,11 +2,9 @@ package ch.partybuzz.mapper;
 
 import ch.partybuzz.dto.EventDto;
 import ch.partybuzz.entity.EventEntity;
-import ch.partybuzz.mapper.EventTagMapper;
-import ch.partybuzz.mapper.TicketMapper;
 import org.mapstruct.*;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.CDI, uses = {EventTagMapper.class, TicketMapper.class})
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.CDI)
 public interface EventMapper {
     EventEntity toEntity(EventDto eventDto);
 
