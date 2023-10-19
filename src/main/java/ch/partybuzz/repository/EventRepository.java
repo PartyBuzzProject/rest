@@ -64,12 +64,6 @@ public class EventRepository implements PanacheRepositoryBase<EventEntity, UUID>
         return list("start_date > ?1", currentDate);
     }
 
-    // Fetch all tags associated with an event
-    public Uni<List<EventEntity>> findTagsByEvent(UUID eventId) {
-        // Assumes you have an EventTags entity mapping the relationship
-        return find("SELECT tag FROM event_tags WHERE event_id = ?1", eventId).list();
-    }
-
     // Mark an event as live
     public Uni<Integer> markAsLive(UUID id) {
         return update("SET is_live = TRUE WHERE id = ?1", id);

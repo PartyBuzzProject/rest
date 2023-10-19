@@ -58,11 +58,6 @@ public class EventService {
                 .onItem().transform(entities -> entities.stream().map(mapper::toDto).toList());
     }
 
-    public Uni<List<EventDto>> findLiveEvents() {
-        return repository.findLiveEvents()
-                .onItem().transform(entities -> entities.stream().map(mapper::toDto).toList());
-    }
-
     public Uni<List<EventDto>> findFeaturedEvents() {
         return repository.findFeaturedEvents()
                 .onItem().transform(entities -> entities.stream().map(mapper::toDto).toList());
