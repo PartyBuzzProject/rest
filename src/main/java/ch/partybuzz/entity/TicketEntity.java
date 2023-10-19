@@ -30,13 +30,10 @@ public class TicketEntity extends BaseEntity {
     @Column(name = "sold")
     private int sold;
 
-    @ManyToMany
-    @JoinTable(
-            name = "ticket_ticket_feature",
-            joinColumns = @JoinColumn(name = "ticket_id"),
-            inverseJoinColumns = @JoinColumn(name = "ticket_feature_id")
-    )
-    private List<TicketFeatureEntity> features = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "ticket_features", joinColumns = @JoinColumn(name = "ticket_id"))
+    @Column(name = "feature")
+    private List<String> features = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
