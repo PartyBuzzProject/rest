@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DatabaseMigrationSettings" lastSelectedDirectory="src/main/resources/db/migration/" />
+  <component name="JpaPluginProjectSettings" dtoSerializableType="1" />
+  <component name="PersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit name="Default">
+        <packages>
+          <package value="ch.partybuzz.entity" />
+        </packages>
+        <entities>
+          <entity value="ch.partybuzz.entity.EventEntity" />
+        </entities>
+      </persistence-unit>
+      <persistence-unit moduleName="rest.main" name="Default">
+        <packages>
+          <package value="ch.partybuzz.entity" />
+        </packages>
+      </persistence-unit>
+    </persistence-units>
+  </component>
+</project>
