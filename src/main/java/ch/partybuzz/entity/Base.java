@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class BaseEntity extends PanacheEntityBase {
+public abstract class Base extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false, updatable = false)

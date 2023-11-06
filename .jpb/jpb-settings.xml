@@ -9,7 +9,7 @@
           <package value="ch.partybuzz.entity" />
         </packages>
         <entities>
-          <entity value="ch.partybuzz.entity.EventEntity" />
+          <entity value="ch.partybuzz.entity.Event" />
         </entities>
       </persistence-unit>
       <persistence-unit moduleName="rest.main" name="Default">

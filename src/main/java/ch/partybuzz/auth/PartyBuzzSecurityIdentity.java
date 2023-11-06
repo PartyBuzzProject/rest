@@ -1,13 +1,24 @@
 package ch.partybuzz.auth;
 
 import io.quarkus.security.identity.SecurityIdentity;
+import io.smallrye.jwt.auth.principal.JWTCallerPrincipal;
+import jakarta.json.Json;
+import org.eclipse.microprofile.jwt.JsonWebToken;
+
+import java.util.UUID;
 
 public class PartyBuzzSecurityIdentity {
 
     private final SecurityIdentity delegate;
 
-    public PartyBuzzSecurityIdentity(SecurityIdentity delegate) {
+    private final JsonWebToken jsonWebToken;
+
+    private final String state;
+
+    public PartyBuzzSecurityIdentity(SecurityIdentity delegate, JsonWebToken jwtCallerPrincipal) {
         this.delegate = delegate;
+        this.jsonWebToken = jwtCallerPrincipal;
+        this.state = UUID.randomUUID().toString();
     }
 
     public String getUserId() {
@@ -15,12 +26,15 @@ public class PartyBuzzSecurityIdentity {
     }
 
     public Boolean isInOrgContext() {
-        return delegate.getAttribute("org_id") != null;
+        return jsonWebToken.getClaim("org_id") != null;
     }
 
     public String getOrgId() {
-        Object orgId = delegate.getAttribute("org_id");
-        return orgId != null ? orgId.toString() : null;
+        return jsonWebToken.getClaim("org_id");
+    }
+
+    public String getState() {
+        return state;
     }
 }
 

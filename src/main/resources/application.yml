@@ -21,6 +21,9 @@ quarkus:
         level: DEBUG
       "io.quarkus.security":
         level: DEBUG
+  rest-client:
+    auth0-api:
+      uri: https://partybuzz.eu.auth0.com
 
 partybuzz:
   flyway:

@@ -11,6 +11,7 @@ import io.smallrye.mutiny.Uni;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import java.time.LocalDateTime;
@@ -26,14 +27,12 @@ public class EventResource {
     @Inject
     EventService service;
 
-    @RolesAllowed("read:events")
     @Route(path = "/all", methods = Route.HttpMethod.GET)
     public Uni<RestResponse<List<EventDto>>> listAll() {
         return service.listAll()
                 .map(RestResponse::ok);
     }
 
-    @RolesAllowed("read:events")
     @Route(path = "/find/:id", methods = Route.HttpMethod.GET)
     public Uni<RestResponse<EventDto>> byId(RoutingContext context) {
         UUID id = UUID.fromString(context.pathParam("id"));
@@ -41,7 +40,6 @@ public class EventResource {
                 .map(RestResponse::ok);
     }
 
-    @RolesAllowed("read:events")
     @Route(path = "/title/:title", methods = Route.HttpMethod.GET)
     public Uni<RestResponse<List<EventDto>>> findByTitle(RoutingContext context) {
         String title = context.pathParam("title");
@@ -65,14 +63,12 @@ public class EventResource {
                 .map(RestResponse::ok);
     }
 
-    @RolesAllowed("read:events")
     @Route(path = "/featured", methods = Route.HttpMethod.GET)
     public Uni<RestResponse<List<EventDto>>> findFeaturedEvents() {
         return service.findFeaturedEvents()
                 .map(RestResponse::ok);
     }
 
-    @RolesAllowed("read:events")
     @Route(path = "/daterange", methods = Route.HttpMethod.GET)
     public Uni<RestResponse<List<EventDto>>> findEventsByDateRange(RoutingContext context) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
@@ -82,7 +78,6 @@ public class EventResource {
                 .map(RestResponse::ok);
     }
 
-    @RolesAllowed("read:events")
     @Route(path = "/upcoming", methods = Route.HttpMethod.GET)
     public Uni<RestResponse<List<EventDto>>> findUpcomingEvents(RoutingContext context) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
@@ -110,7 +105,7 @@ public class EventResource {
     @RolesAllowed("create:events")
     @Route(path = "/save", methods = Route.HttpMethod.POST)
     public Uni<RestResponse<EventDto>> save(RoutingContext context) {
-        JsonObject json = (JsonObject) context.body();
+        JsonObject json = context.body().asJsonObject();
         EventDto eventDto = json.mapTo(EventDto.class);
         return service.save(eventDto)
                 .map(data -> RestResponse.status(RestResponse.Status.CREATED, data));
@@ -120,7 +115,7 @@ public class EventResource {
     @Route(path = "/update/:id", methods = Route.HttpMethod.PUT)
     public Uni<RestResponse<EventDto>> updateEvent(RoutingContext context) {
         UUID id = UUID.fromString(context.pathParam("id"));
-        JsonObject json = (JsonObject) context.body();
+        JsonObject json = context.body().asJsonObject();
         EventDto updatedEventDto = json.mapTo(EventDto.class);
         return service.updateEvent(id, updatedEventDto)
                 .map(RestResponse::ok);

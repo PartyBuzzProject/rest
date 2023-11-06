@@ -1,6 +1,6 @@
 package ch.partybuzz.repository;
 
-import ch.partybuzz.entity.EventEntity;
+import ch.partybuzz.entity.Event;
 import io.quarkus.hibernate.reactive.panache.PanacheRepositoryBase;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -10,57 +10,57 @@ import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
-public class EventRepository implements PanacheRepositoryBase<EventEntity, UUID> {
+public class EventRepository implements PanacheRepositoryBase<Event, UUID> {
 
     // Fetch a single event by its title
-    public Uni<List<EventEntity>> findByTitle(String title, int pageNumber, int pageSize) {
+    public Uni<List<Event>> findByTitle(String title, int pageNumber, int pageSize) {
         return find("title LIKE ?1", "%" + title + "%")
                 .page(pageNumber, pageSize)
                 .list();
     }
 
     // Fetch a single event by its ID
-    public Uni<EventEntity> findById(UUID id) {
+    public Uni<Event> findById(UUID id) {
         return find("id", id).firstResult();
     }
 
     // Fetch events with pagination
-    public Uni<List<EventEntity>> findEvents(int pageNumber, int pageSize) {
+    public Uni<List<Event>> findEvents(int pageNumber, int pageSize) {
         return find("FROM EventEntity").page(pageNumber, pageSize).list();
     }
 
     // Fetch all events
-    public Uni<List<EventEntity>> findAllEvents() {
+    public Uni<List<Event>> findAllEvents() {
         return listAll();
     }
 
     // Fetch events by an organizer
-    public Uni<List<EventEntity>> findByOrganizer(UUID organizerId) {
+    public Uni<List<Event>> findByOrganizer(UUID organizerId) {
         return list("organizer_id", organizerId);
     }
 
     // Fetch events by category
-    public Uni<List<EventEntity>> findByCategory(String category) {
+    public Uni<List<Event>> findByCategory(String category) {
         return list("category", category);
     }
 
     // Fetch live events
-    public Uni<List<EventEntity>> findLiveEvents() {
+    public Uni<List<Event>> findLiveEvents() {
         return list("is_live", true);
     }
 
     // Fetch featured events
-    public Uni<List<EventEntity>> findFeaturedEvents() {
+    public Uni<List<Event>> findFeaturedEvents() {
         return list("is_featured", true);
     }
 
     // Fetch events happening between specific dates
-    public Uni<List<EventEntity>> findEventsByDateRange(LocalDateTime start, LocalDateTime end) {
+    public Uni<List<Event>> findEventsByDateRange(LocalDateTime start, LocalDateTime end) {
         return list("start_date BETWEEN ?1 AND ?2", start, end);
     }
 
     // Fetch upcoming events
-    public Uni<List<EventEntity>> findUpcomingEvents(LocalDateTime currentDate) {
+    public Uni<List<Event>> findUpcomingEvents(LocalDateTime currentDate) {
         return list("start_date > ?1", currentDate);
     }
 
@@ -75,12 +75,12 @@ public class EventRepository implements PanacheRepositoryBase<EventEntity, UUID>
     }
 
     // Save a new event
-    public Uni<EventEntity> createEvent(EventEntity event) {
+    public Uni<Event> createEvent(Event event) {
         return persistAndFlush(event).onItem().transform(ignore -> event);
     }
 
     // Update an event based on its ID
-    public Uni<EventEntity> updateEvent(UUID id, EventEntity updatedEvent) {
+    public Uni<Event> updateEvent(UUID id, Event updatedEvent) {
         return findById(id).onItem().ifNotNull().transformToUni(existingEvent -> {
             existingEvent.setTitle(updatedEvent.getTitle());
             // Add other fields that need updating here

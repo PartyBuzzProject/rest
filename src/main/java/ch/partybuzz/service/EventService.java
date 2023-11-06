@@ -2,18 +2,21 @@ package ch.partybuzz.service;
 
 import ch.partybuzz.auth.PartyBuzzSecurityIdentity;
 import ch.partybuzz.dto.EventDto;
-import ch.partybuzz.entity.EventEntity;
+import ch.partybuzz.entity.Event;
+import ch.partybuzz.entity.EventCategory;
 import ch.partybuzz.mapper.EventMapper;
+import ch.partybuzz.repository.EventCategoryRepository;
 import ch.partybuzz.repository.EventRepository;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
-import io.quarkus.security.identity.SecurityIdentity;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -21,6 +24,9 @@ public class EventService {
 
     @Inject
     EventRepository repository;
+
+    @Inject
+    EventCategoryRepository categoryRepository;
 
     @Inject
     EventMapper mapper;
@@ -91,17 +97,37 @@ public class EventService {
     @WithTransaction
     public Uni<EventDto> save(EventDto eventDto) {
         if (securityIdentity.isInOrgContext()) {
-            EventEntity event = mapper.toEntity(eventDto);
+            Event event = mapper.toEntity(eventDto);
             event.setOrganizerId(securityIdentity.getOrgId());
-            return repository.createEvent(event)
-                    .onItem().transform(mapper::toDto);
+
+            List<UUID> categoryIds = event.getCategories().stream().map(EventCategory::getId).toList();
+
+            if (categoryIds.isEmpty()) {
+                return Uni.createFrom().failure(new IllegalStateException("Event must have at least one category."));
+            }
+
+            return categoryRepository.findByIds(categoryIds)
+                    .onItem().ifNull().failWith(new IllegalStateException("One or more categories do not exist."))
+                    .flatMap(existingCategories -> {
+                        if (existingCategories.size() != categoryIds.size()) {
+                            return Uni.createFrom().failure(new IllegalStateException("One or more categories do not exist."));
+                        }
+
+                        Set<EventCategory> categorySet = new HashSet<>(existingCategories);
+                        event.setCategories(categorySet);
+
+                        return repository.createEvent(event)
+                                .onItem().transform(mapper::toDto);
+                    });
+        } else {
+            return Uni.createFrom().failure(new SecurityException("User is not in an organizational context."));
         }
-        return null;
     }
+
 
     @WithTransaction
     public Uni<EventDto> updateEvent(UUID id, EventDto updatedEventDto) {
-        EventEntity updatedEvent = mapper.toEntity(updatedEventDto);
+        Event updatedEvent = mapper.toEntity(updatedEventDto);
         return repository.updateEvent(id, updatedEvent)
                 .onItem().transform(mapper::toDto);
     }
