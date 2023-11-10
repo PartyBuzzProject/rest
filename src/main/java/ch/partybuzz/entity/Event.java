@@ -23,10 +23,10 @@ public class Event extends Base {
     private String location;
 
     @Column(name = "start_date")
-    private OffsetDateTime startTime;
+    private OffsetDateTime startDate;
 
     @Column(name = "end_date")
-    private OffsetDateTime endTime;
+    private OffsetDateTime endDate;
 
     @Column(name = "organizer_id")
     private String organizerId;
@@ -34,8 +34,8 @@ public class Event extends Base {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "sale_start_time")
-    private OffsetDateTime saleStartTime;
+    @Column(name = "sale_start_date")
+    private OffsetDateTime saleStartDate;
 
     @Column(name = "allow_ticket_purchase_after_start")
     private boolean allowTicketPurchaseAfterStart;
@@ -44,9 +44,9 @@ public class Event extends Base {
     private boolean isFeatured;
 
     @ManyToMany
-    @JoinTable(name = "event_eventCategories",
+    @JoinTable(name = "event_event_categories",
             joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "eventCategory_id"))
+            inverseJoinColumns = @JoinColumn(name = "event_category_id"))
     private Set<EventCategory> categories = new LinkedHashSet<>();
 
 }

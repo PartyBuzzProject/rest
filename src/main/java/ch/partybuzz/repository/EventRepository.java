@@ -4,6 +4,7 @@ import ch.partybuzz.entity.Event;
 import io.quarkus.hibernate.reactive.panache.PanacheRepositoryBase;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.hibernate.reactive.mutiny.Mutiny;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -76,7 +77,7 @@ public class EventRepository implements PanacheRepositoryBase<Event, UUID> {
 
     // Save a new event
     public Uni<Event> createEvent(Event event) {
-        return persistAndFlush(event).onItem().transform(ignore -> event);
+        return persistAndFlush(event);
     }
 
     // Update an event based on its ID

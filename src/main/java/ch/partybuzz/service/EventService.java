@@ -12,6 +12,7 @@ import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.hibernate.reactive.mutiny.Mutiny;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -116,8 +117,8 @@ public class EventService {
                         Set<EventCategory> categorySet = new HashSet<>(existingCategories);
                         event.setCategories(categorySet);
 
-                        return repository.createEvent(event)
-                                .onItem().transform(mapper::toDto);
+                        return repository.createEvent(event).onItem().ifNotNull().transformToUni(savedEvent ->
+                                Mutiny.fetch(savedEvent.getCategories()).replaceWith(savedEvent)).onItem().transform(mapper::toDto);
                     });
         } else {
             return Uni.createFrom().failure(new SecurityException("User is not in an organizational context."));
